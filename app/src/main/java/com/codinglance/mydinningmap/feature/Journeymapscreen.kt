@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.Glide
 import com.codinglance.mydinningmap.feature.Journey
+import com.codinglance.mydinningmap.feature.JourneyStop
 import com.codinglance.mydinningmap.feature.MapStyle
 import com.codinglance.mydinningmap.feature.StopColors
 import com.codinglance.mydinningmap.feature.composables.JourneyListPanel
@@ -22,6 +23,8 @@ import com.codinglance.mydinningmap.feature.composables.JourneyMarker
 import com.codinglance.mydinningmap.feature.composables.JourneyStatsBar
 import com.codinglance.mydinningmap.feature.composables.JourneyTopBar
 import com.codinglance.mydinningmap.feature.composables.StopDetailSheet
+import com.codinglance.mydinningmap.feature.composables.uniqueStops
+import com.codinglance.mydinningmap.feature.composables.visitCountMap
 import com.codinglance.mydinningmap.feature.viewmodel.JourneyMapViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.*
@@ -35,6 +38,14 @@ fun JourneyMapScreen(viewModel: JourneyMapViewModel = viewModel()) {
     val journey = viewModel.activeJourney
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(LatLng(20.5937, 78.9629), 5f)
+    }
+
+    // ✅ Deduplicated stops & visit count across ALL journeys
+    val uniqueStops = remember(viewModel.journeys) {
+        viewModel.journeys.uniqueStops()
+    }
+    val visitCountMap = remember(viewModel.journeys) {
+        viewModel.journeys.visitCountMap()
     }
 
     LaunchedEffect(journey?.id) {
@@ -57,23 +68,21 @@ fun JourneyMapScreen(viewModel: JourneyMapViewModel = viewModel()) {
         viewModel.clearFitBoundsRequest()
     }
 
-    // ✅ Load all bitmaps here — LaunchedEffect works fine at screen level
     val bitmapMap = remember { mutableStateMapOf<String, ImageBitmap?>() }
     val context = LocalContext.current
 
-    LaunchedEffect(journey?.stops) {
-        journey?.stops?.forEach { stop ->
+    // ✅ Load bitmaps for unique stops only — no duplicate Glide requests
+    LaunchedEffect(uniqueStops) {
+        uniqueStops.forEach { stop ->
             if (stop.image.isNotBlank() && !bitmapMap.containsKey(stop.image)) {
                 launch {
-                    Log.d("MapScreen", "Loading: ${stop.image}")
                     bitmapMap[stop.image] = loadBitmapFromUrl(context, stop.image)
-                    Log.d("MapScreen", "Loaded: ${stop.image} → ${bitmapMap[stop.image]}")
                 }
             }
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding()) {
+    Box(modifier = Modifier.fillMaxSize().navigationBarsPadding()) {
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
@@ -91,11 +100,19 @@ fun JourneyMapScreen(viewModel: JourneyMapViewModel = viewModel()) {
                 }
             )
         ) {
-            journey?.stops?.forEachIndexed { index, stop ->
-                val bitmap = bitmapMap[stop.image]  // ✅ observe state directly
+            // ✅ Only show stops from active journey, but deduplicated
+            val stopsToShow = remember(journey, uniqueStops) {
+                if (journey == null) uniqueStops
+                else uniqueStops.filter { unique ->
+                    journey.stops.any { it.restaurant_code == unique.restaurant_code }
+                }
+            }
 
-                // ✅ key() forces MarkerComposable to recompose when bitmap changes
-                key(stop.image, bitmap != null) {
+            stopsToShow.forEachIndexed { index, stop ->
+                val bitmap = bitmapMap[stop.image]
+                val visitCount = visitCountMap[stop.restaurant_code] ?: 1
+
+                key(stop.restaurant_code, bitmap != null) {
                     MarkerComposable(
                         state = MarkerState(position = LatLng(stop.latitude, stop.longitude)),
                         title = stop.title,
@@ -104,8 +121,9 @@ fun JourneyMapScreen(viewModel: JourneyMapViewModel = viewModel()) {
                         JourneyMarker(
                             stop = stop,
                             stopNumber = index + 1,
-                            isSelected = false,
-                            imageBitmap = bitmap
+                            isSelected = viewModel.selectedStop?.restaurant_code == stop.restaurant_code,
+                            imageBitmap = bitmap,
+                            visitCount = visitCount
                         )
                     }
                 }
@@ -113,6 +131,7 @@ fun JourneyMapScreen(viewModel: JourneyMapViewModel = viewModel()) {
         }
 
         JourneyTopBar(
+            viewModel,
             journey = journey,
             onMenuClick = { viewModel.toggleJourneyList() },
             onFitClick = { viewModel.fitToJourney() },
@@ -138,6 +157,7 @@ fun JourneyMapScreen(viewModel: JourneyMapViewModel = viewModel()) {
             exit = slideOutHorizontally { -it } + fadeOut(tween(200))
         ) {
             JourneyListPanel(
+                viewModel,
                 journeys = viewModel.journeys,
                 activeJourney = viewModel.activeJourney,
                 onJourneySelected = { viewModel.selectJourney(it) },
@@ -162,7 +182,6 @@ fun JourneyMapScreen(viewModel: JourneyMapViewModel = viewModel()) {
         }
     }
 }
-
 // ─────────────────────────────────────────────────────────────────
 //  JOURNEY POLYLINE  –  FIXED
 //
@@ -230,3 +249,11 @@ suspend fun loadBitmapFromUrl(context: Context, url: String): ImageBitmap? {
         }
     }
 }
+
+fun Journey.uniqueStops(): List<JourneyStop> =
+    stops.distinctBy { it.restaurant_code }
+
+fun Journey.visitCountMap(): Map<String, Int> =
+    stops
+        .groupBy { it.restaurant_code }
+        .mapValues { it.value.size }
