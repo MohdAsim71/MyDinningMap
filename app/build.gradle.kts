@@ -73,6 +73,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.animation:animation")
+    implementation("com.github.bumptech.glide:compose:1.0.0-beta08")
 
     // ✅ Google Maps Compose
     implementation("com.google.maps.android:maps-compose:4.3.3")
