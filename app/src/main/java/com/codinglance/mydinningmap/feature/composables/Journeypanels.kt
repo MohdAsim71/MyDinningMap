@@ -567,7 +567,7 @@ private fun StopListItem(
 }
 // ── Reusable badge ────────────────────────────────────────────────
 @Composable
-private fun Badge(
+fun Badge(
     label: String,
     bgColor: Color,
     textColor: Color,

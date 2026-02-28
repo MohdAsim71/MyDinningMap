@@ -193,7 +193,7 @@ fun JourneyMapScreen(viewModel: JourneyMapViewModel = viewModel()) {
                 }
             }
 
-            stopsToShow.forEachIndexed { index, stop ->
+            journey?.stops?.forEachIndexed { index, stop ->
                 val bitmap = bitmapMap[stop.image]
                 val visitCount = visitCountMap[stop.restaurant_code] ?: 1
 
