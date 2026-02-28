@@ -201,7 +201,7 @@ private fun SheetHeader(
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.Top,
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         // Stop number badge
@@ -303,14 +303,6 @@ private fun InfoSection(stop: JourneyStop, distance: Float?) {
             )
         }
 
-        // Duration at stop
-        if (stop.durationAtStop > 0) {
-            InfoRow(
-                emoji = "⏱️",
-                label = "TIME SPENT HERE",
-                value = DateUtils.formatDuration(stop.durationAtStop)
-            )
-        }
     }
 }
 
@@ -326,9 +318,9 @@ private fun NotesSection(notes: String) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text("📝", fontSize = 15.sp)
+            Text("🍽️", fontSize = 15.sp)
             Text(
-                "NOTES",
+                "FOOD REVIEW",
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Medium,
                 color = Color(0xFF8E8E93),
