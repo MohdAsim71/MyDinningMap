@@ -13,92 +13,130 @@ object JourneyRepository {
         // ── Journey 1: Mumbai City Tour ───────────────────────────
         Journey(
             id = 1,
-            name = "Mumbai City Tour",
+            name = "Gurgaon City",
             description = "A full day exploring the best of Mumbai",
             date = "Dec 15, 2024",
             coverEmoji = "🌆",
             totalDistanceKm = 34.6f,
             stops = listOf(
                 JourneyStop(
-                    id = 1, title = "Home – Bandra West",
-                    address = "Turner Road, Bandra West, Mumbai 400050",
+                    id = 1,
+                    title = "Haldiram",
+                    address = "Sahara Mall Shopping Complex M.G.Raod,Gurugram",
                     notes = "Started early at 7am. Light traffic.",
-                    latitude = 19.0596, longitude = 72.8295,
+                    latitude = 28.4794338,
+                    longitude = 77.0864217,
                     timestamp = 1734232200000L,
                     stopType = StopType.START,
-                    distanceFromPrev = 0f, durationAtStop = 5
+                    distanceFromPrev = 0f,
+                    durationAtStop = 5
                 ),
                 JourneyStop(
-                    id = 2, title = "Gateway of India",
-                    address = "Apollo Bandar, Colaba, Mumbai 400001",
+                    id = 2,
+                    title = "YouMee",
+                    address = "Unit No GR-02, Ground Floor, Worldmark Gurgaon, Village Maidawas, Sector 65, Gurugram, Haryana – 122001",
                     notes = "Iconic colonial architecture. Very crowded in the morning but worth it. Watched boats leave for Elephanta.",
-                    latitude = 18.9220, longitude = 72.8347,
+                    latitude = 28.3980361,
+                    longitude = 77.0726711,
                     timestamp = 1734236400000L,
                     stopType = StopType.PHOTO,
-                    distanceFromPrev = 12.3f, durationAtStop = 45
+                    distanceFromPrev = 12.3f,
+                    durationAtStop = 45
                 ),
                 JourneyStop(
-                    id = 3, title = "Leopold Cafe",
-                    address = "Colaba Causeway, Colaba, Mumbai 400005",
+                    id = 3,
+                    title = "Barista Coffee",
+                    address = "Shop No.D1 And D13-Fround Floor, Dlf Phase Qutub Plaza, Gurugram",
                     notes = "Famous breakfast spot. Had keema pav and chai. Great vibes, old-school feel.",
-                    latitude = 18.9225, longitude = 72.8313,
+                    latitude = 28.4714694,
+                    longitude = 77.1020038,
                     timestamp = 1734239400000L,
                     stopType = StopType.FOOD,
-                    distanceFromPrev = 0.6f, durationAtStop = 60
+                    distanceFromPrev = 0.6f,
+                    durationAtStop = 60
                 ),
                 JourneyStop(
-                    id = 4, title = "Chhatrapati Shivaji Terminus",
-                    address = "CST Area, Fort, Mumbai 400001",
-                    notes = "UNESCO World Heritage site. Stunning Victorian Gothic architecture. Took many photos of the facade.",
-                    latitude = 18.9398, longitude = 72.8355,
-                    timestamp = 1734243600000L,
-                    stopType = StopType.PHOTO,
-                    distanceFromPrev = 2.1f, durationAtStop = 30
+                    id = 4,
+                    title = "P.F. Chang",
+                    address = "Unit No. 6, Ground Floor, DLF Phase 2, Sector 24, DLF Cyber City, Gurgaon",
+                    notes = "Famous breakfast spot. Had keema pav and chai. Great vibes, old-school feel.",
+                    latitude = 28.4950716,
+                    longitude = 77.0884522,
+                    timestamp = 1734239400000L,
+                    stopType = StopType.FOOD,
+                    distanceFromPrev = 0.6f,
+                    durationAtStop = 60
                 ),
                 JourneyStop(
-                    id = 5, title = "Crawford Market",
-                    address = "Lokmanya Tilak Marg, Crawford Market, Mumbai 400001",
+                    id = 5,
+                    title = "Haldiram MGF Metropolitan Mall",
+                    address = "MGF Metropolitan Mall, MG Road, Gurgaon",
                     notes = "Picked up fresh fruits and spices. Chaotic but fun experience. Got mangoes and cashews.",
-                    latitude = 18.9459, longitude = 72.8342,
+                    latitude = 28.4809652,
+                    longitude = 77.0803792,
                     timestamp = 1734246000000L,
                     stopType = StopType.VISIT,
-                    distanceFromPrev = 0.7f, durationAtStop = 40
+                    distanceFromPrev = 0.7f,
+                    durationAtStop = 40
                 ),
                 JourneyStop(
-                    id = 6, title = "Lunch at Cafe Mondegar",
-                    address = "Metro House, Colaba, Mumbai 400001",
+                    id = 6,
+                    title = "Punjab Grill Tappa",
+                    address = "Shop 19, Ground floor, DLF Cybercity, Gurgaon-122002",
                     notes = "Had their famous chicken sandwich and beer. Love the Mario Miranda murals on the walls.",
-                    latitude = 18.9232, longitude = 72.8317,
+                    latitude = 28.4959442,
+                    longitude = 77.0888396,
                     timestamp = 1734252000000L,
                     stopType = StopType.FOOD,
-                    distanceFromPrev = 3.2f, durationAtStop = 75
+                    distanceFromPrev = 3.2f,
+                    durationAtStop = 75
                 ),
                 JourneyStop(
-                    id = 7, title = "Marine Drive",
-                    address = "Netaji Subhash Chandra Bose Road, Marine Lines, Mumbai 400020",
+                    id = 7, title = "OMI by Aldott",
+                    address = "The Aldott, 81, Moulsari Ave, DLF Phase 3, Sector 24, Gurugram, Haryana",
                     notes = "Walked the Queen's Necklace at golden hour. Beautiful sunset view. Sat at the sea wall for an hour.",
-                    latitude = 18.9432, longitude = 72.8231,
+                    latitude = 28.492682,
+                    longitude = 77.1076935,
                     timestamp = 1734260400000L,
                     stopType = StopType.VISIT,
-                    distanceFromPrev = 4.1f, durationAtStop = 60
+                    distanceFromPrev = 4.1f,
+                    durationAtStop = 60
                 ),
                 JourneyStop(
-                    id = 8, title = "Chai at Starbucks BKC",
-                    address = "BKC, Bandra East, Mumbai 400051",
+                    id = 8,
+                    title = "My Secret Place",
+                    address = "SCO 14, Main Palam Vihar Road, Palam Vihar, Sector 23A, Gurugram",
                     notes = "Quick coffee stop before heading home.",
-                    latitude = 19.0654, longitude = 72.8671,
+                    latitude = 28.5049246,
+                    longitude = 77.0527208,
                     timestamp = 1734267600000L,
                     stopType = StopType.REST,
-                    distanceFromPrev = 9.8f, durationAtStop = 25
+                    distanceFromPrev = 9.8f,
+                    durationAtStop = 25
                 ),
                 JourneyStop(
-                    id = 9, title = "Home – Bandra West",
-                    address = "Turner Road, Bandra West, Mumbai 400050",
+                    id = 9,
+                    title = "The Drunken Botanist",
+                    address = "Unit 1B & 1C, Upper Ground Floor-C, Building 10C, Cyber Hub, DLF Cyber City, Gurgaon",
                     notes = "Back home after an amazing day. Feet ache but memories made!",
-                    latitude = 19.0596, longitude = 72.8295,
+                    latitude = 28.4938892,
+                    longitude = 77.0883356,
                     timestamp = 1734270000000L,
                     stopType = StopType.END,
-                    distanceFromPrev = 1.8f, durationAtStop = 0
+                    distanceFromPrev = 1.8f,
+                    durationAtStop = 0
+                ),
+                JourneyStop(
+                    id = 10,
+                    title = "Daryaganj",
+                    address = "Ambience Mall DLF Phase 3, Haryana",
+                    notes = "Back home after an amazing day. Feet ache but memories made!",
+                    latitude = 28.5055767,
+                    longitude = 77.0962019,
+                    timestamp = 1734270000000L,
+                    stopType = StopType.END,
+                    distanceFromPrev = 1.8f,
+                    durationAtStop = 0
                 )
             )
         ),
