@@ -52,7 +52,6 @@ import com.codinglance.mydinningmap.PreferenceManager
 import com.codinglance.mydinningmap.feature.Journey
 import com.codinglance.mydinningmap.feature.JourneyStop
 import com.codinglance.mydinningmap.feature.MapStyle
-import com.codinglance.mydinningmap.feature.StopColors
 import com.codinglance.mydinningmap.feature.composables.JourneyListPanel
 import com.codinglance.mydinningmap.feature.composables.JourneyMarker
 import com.codinglance.mydinningmap.feature.composables.JourneyStatsBar
@@ -193,7 +192,7 @@ fun JourneyMapScreen(viewModel: JourneyMapViewModel = viewModel()) {
                 }
             }
 
-            stopsToShow.forEachIndexed { index, stop ->
+            journey?.stops?.forEachIndexed { index, stop ->
                 val bitmap = bitmapMap[stop.image]
                 val visitCount = visitCountMap[stop.restaurant_code] ?: 1
 
@@ -349,33 +348,33 @@ fun JourneyMapScreen(viewModel: JourneyMapViewModel = viewModel()) {
 //  FIX: Pass Compose Color directly. No android.graphics.Color needed at all.
 // ─────────────────────────────────────────────────────────────────
 
-@Composable
-private fun JourneyPolyline(journey: Journey) {
-    val points = journey.stops.map { LatLng(it.latitude, it.longitude) }
-
-    // White halo underneath — improves visibility on satellite/terrain tiles
-    // ✅ Color.White.copy() is already androidx.compose.ui.graphics.Color
-    Polyline(
-        points = points,
-        color = Color.White.copy(alpha = 0.55f),
-        width = 10f,
-        zIndex = 0f,
-        geodesic = true
-    )
-
-    // Main blue route line on top
-    // ✅ StopColors.PathLine is already androidx.compose.ui.graphics.Color
-    Polyline(
-        points = points,
-        color = StopColors.PathLine,
-        width = 6f,
-        zIndex = 1f,
-        geodesic = true,
-        jointType = JointType.ROUND,
-        startCap = RoundCap(),
-        endCap = RoundCap()
-    )
-}
+//@Composable
+//private fun JourneyPolyline(journey: Journey) {
+//    val points = journey.stops.map { LatLng(it.latitude, it.longitude) }
+//
+//    // White halo underneath — improves visibility on satellite/terrain tiles
+//    // ✅ Color.White.copy() is already androidx.compose.ui.graphics.Color
+//    Polyline(
+//        points = points,
+//        color = Color.White.copy(alpha = 0.55f),
+//        width = 10f,
+//        zIndex = 0f,
+//        geodesic = true
+//    )
+//
+//    // Main blue route line on top
+//    // ✅ StopColors.PathLine is already androidx.compose.ui.graphics.Color
+//    Polyline(
+//        points = points,
+//        color = StopColors.PathLine,
+//        width = 6f,
+//        zIndex = 1f,
+//        geodesic = true,
+//        jointType = JointType.ROUND,
+//        startCap = RoundCap(),
+//        endCap = RoundCap()
+//    )
+//}
 
 private fun buildBounds(journey: Journey): LatLngBounds {
     val builder = LatLngBounds.builder()

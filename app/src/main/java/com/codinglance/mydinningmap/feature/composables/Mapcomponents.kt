@@ -44,6 +44,7 @@ fun JourneyMarker(
     val size = if (isSelected) 52.dp else 42.dp
     val borderWidth = if (isSelected) 3.dp else 2.dp
     val crownSize = if (isSelected) 22.dp else 18.dp
+    val tailColor = markerTailColor(stop)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -62,14 +63,14 @@ fun JourneyMarker(
                     .shadow(
                         elevation = if (isSelected) 12.dp else 6.dp,
                         shape = CircleShape,
-                        ambientColor = color.copy(alpha = 0.3f),
-                        spotColor = color.copy(alpha = 0.5f)
+                        ambientColor = tailColor.copy(alpha = 0.3f),
+                        spotColor = tailColor.copy(alpha = 0.5f)
                     )
                     .clip(CircleShape)
-                    .background(if (isSelected) color else Color.White)
+                    .background(if (isSelected) tailColor else Color.White)
                     .border(
                         width = if (stop.is_prime) 2.dp else borderWidth,
-                        color = if (stop.is_prime) Color(0xFFFFD700) else color, // gold border for prime
+                        color = tailColor, // gold border for prime
                         shape = CircleShape
                     ),
                 contentAlignment = Alignment.Center
@@ -84,29 +85,12 @@ fun JourneyMarker(
                 } else {
                     CircularProgressIndicator(
                         modifier = Modifier.size(if (isSelected) 20.dp else 16.dp),
-                        color = color,
+                        color = tailColor,
                         strokeWidth = 2.dp
                     )
                 }
             }
 
-            // ── Crown badge on top ─────────────────────────────────
-            if (stop.is_prime) {
-                Box(
-                    modifier = Modifier
-                        .size(crownSize)
-                        .align(Alignment.TopCenter)
-                        .background(Color(0xFFFFD700), CircleShape) // gold circle bg
-                        .border(1.dp, Color.White, CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "👑",
-                        fontSize = if (isSelected) 11.sp else 9.sp,
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
         }
 
         // ── Marker tail ───────────────────────────────────────────
@@ -114,13 +98,13 @@ fun JourneyMarker(
             modifier = Modifier
                 .width(if (isSelected) 3.dp else 2.dp)
                 .height(if (isSelected) 10.dp else 7.dp)
-                .background(if (stop.is_prime) Color(0xFFFFD700) else color)
+                .background(tailColor)
         )
         Box(
             modifier = Modifier
                 .size(if (isSelected) 6.dp else 4.dp)
                 .clip(CircleShape)
-                .background(if (stop.is_prime) Color(0xFFFFD700) else color)
+                .background(tailColor)
         )
     }
 }
@@ -196,3 +180,10 @@ fun InfoRow(
         }
     }
 }
+
+fun markerTailColor(stop: JourneyStop): Color =
+    when {
+        stop.is_prime -> Color(0xFF321b16)  // gold
+        stop.is_chain -> Color(0xFFFF9500)  // blue
+        else -> Color(0xFF5AC8FA)                 // default stop type color
+    }

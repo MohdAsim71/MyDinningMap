@@ -20,6 +20,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Badge
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,6 +40,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -51,6 +53,7 @@ import com.codinglance.mydinningmap.feature.Journey
 import com.codinglance.mydinningmap.feature.JourneyStop
 import com.codinglance.mydinningmap.feature.StopColors
 import com.codinglance.mydinningmap.feature.StopType
+import com.codinglance.mydinningmap.touchScaleClickable
 
 
 // ─────────────────────────────────────────────────────────────────
@@ -198,7 +201,7 @@ private fun SheetHeader(
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.Top,
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         // Stop number badge
@@ -226,13 +229,7 @@ private fun SheetHeader(
 
         Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             // Journey breadcrumb
-            Text(
-                "Stop $stopNumber of $totalStops",
-                fontSize = 11.sp,
-                color = Color(0xFF8E8E93),
-                fontWeight = FontWeight.Medium,
-                letterSpacing = 0.5.sp
-            )
+
             // Stop title
             Text(
                 stop.title,
@@ -242,8 +239,37 @@ private fun SheetHeader(
                 lineHeight = 26.sp
             )
             // Stop type badge
-            StopTypeBadge(stop.stopType)
+            if (stop.is_prime) {
+                Badge(
+                    label = "Prime",
+                    bgColor = color.copy(alpha = 0.12f),
+                    textColor = color,
+                    icon = "👑"
+                )
+            }
+            if (stop.is_chain) {
+                Badge(
+                    label = "Chain",
+                    bgColor = color.copy(alpha = 0.12f),
+                    textColor = color,
+                    icon = "🔗"
+                )
+            }
         }
+        val uriHandler = LocalUriHandler.current
+        Box(modifier = Modifier.touchScaleClickable(onClick = {
+            if (stop.restaurant_code.isNotBlank()) {
+                uriHandler.openUri(stop.restaurant_code)  // ✅ opens in browser
+            }
+        })) {
+            Badge(
+                label = "Visit Again",
+                bgColor = color.copy(alpha = 0.12f),
+                textColor = color,
+                icon = "🔗"
+            )
+        }
+
     }
 }
 
@@ -277,14 +303,6 @@ private fun InfoSection(stop: JourneyStop, distance: Float?) {
             )
         }
 
-        // Duration at stop
-        if (stop.durationAtStop > 0) {
-            InfoRow(
-                emoji = "⏱️",
-                label = "TIME SPENT HERE",
-                value = DateUtils.formatDuration(stop.durationAtStop)
-            )
-        }
     }
 }
 
@@ -300,9 +318,9 @@ private fun NotesSection(notes: String) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text("📝", fontSize = 15.sp)
+            Text("🍽️", fontSize = 15.sp)
             Text(
-                "NOTES",
+                "FOOD REVIEW",
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Medium,
                 color = Color(0xFF8E8E93),
