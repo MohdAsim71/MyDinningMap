@@ -1,6 +1,7 @@
 package com.codinglance.mydinningmap.feature.composables
 
 
+import android.R
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
@@ -12,11 +13,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.codinglance.mydinningmap.DateUtils
 import com.codinglance.mydinningmap.DistanceUtils
 import com.codinglance.mydinningmap.feature.Journey
@@ -48,42 +53,87 @@ fun StopDetailSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        containerColor = Color.White,
-        dragHandle = {
-            // Custom drag handle with color accent
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(Modifier.height(12.dp))
-                Box(
-                    modifier = Modifier
-                        .width(36.dp)
-                        .height(4.dp)
-                        .clip(CircleShape)
-                        .background(Color(0xFFD1D1D6))
-                )
-                Spacer(Modifier.height(12.dp))
-                // Color accent line
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(2.dp)
-                        .background(color.copy(alpha = 0.15f))
-                )
-            }
-        },
-        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+        dragHandle = null,
+        shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         tonalElevation = 0.dp
     ) {
+        SheetContent(
+            stop,
+            stopNumber,
+            totalStops,
+            journey,
+            onDismiss,
+            onPrevStop,
+            onNextStop,
+            hasPrev,
+            hasNext
+        )
+    }
+}
+
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun SheetContent(
+    stop: JourneyStop,
+    stopNumber: Int,
+    totalStops: Int,
+    journey: Journey,
+    onDismiss: () -> Unit,
+    onPrevStop: () -> Unit,
+    onNextStop: () -> Unit,
+    hasPrev: Boolean,
+    hasNext: Boolean
+) {
+    val color = StopColors.forType(stop.stopType)
+
+    Box(
+        Modifier
+            .background(Color.White)
+            .clip(shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+            .border(
+                width = 2.dp,
+                color = color,
+                shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
+            )
+    ) {
+        GlideImage(
+            model = "https://dt4l9bx31tioh.cloudfront.net//eazymedia//restaurant//695156//restaurant420240703085242.jpg",
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(2f)
+                .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
+            contentScale = ContentScale.Crop
+        )
+
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .aspectRatio(2f)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colorStops = arrayOf(
+                            0.0f to Color.Transparent,
+                            0.8f to Color.Transparent,
+                            1.0f to Color.White
+                        )
+                    )
+                )
+        )
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 32.dp),
+                .padding(start = 20.dp, end = 20.dp, bottom = 32.dp, top = 10.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
+            Spacer(
+                Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(2f)
+            )
 
             // ── Header ────────────────────────────────────────────
             SheetHeader(stop, stopNumber, totalStops, color)
@@ -136,6 +186,7 @@ private fun SheetHeader(
             when (stop.stopType) {
                 StopType.START, StopType.END ->
                     Text(stop.stopType.emoji, fontSize = 20.sp)
+
                 else ->
                     Text(
                         stopNumber.toString(),
@@ -304,7 +355,9 @@ private fun StopNavigation(
             OutlinedButton(
                 onClick = onPrev,
                 enabled = hasPrev,
-                modifier = Modifier.weight(1f).height(48.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .height(48.dp),
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.outlinedButtonColors(
                     contentColor = color,
@@ -322,7 +375,9 @@ private fun StopNavigation(
             Button(
                 onClick = onNext,
                 enabled = hasNext,
-                modifier = Modifier.weight(1f).height(48.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .height(48.dp),
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = color,
@@ -337,4 +392,153 @@ private fun StopNavigation(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun PreviewStopDetailSheet() {
+
+    val dummyJourneyStops = listOf(
+
+        JourneyStop(
+            id = 1,
+            title = "New Delhi Railway Station",
+            address = "Ajmeri Gate, New Delhi, Delhi 110006",
+            notes = "Journey starting point",
+            latitude = 28.6430,
+            longitude = 77.2197,
+            timestamp = 1739491200000, // 15 Feb 2025 08:00 AM
+            stopType = StopType.START,
+            distanceFromPrev = 0f,
+            durationAtStop = 20
+        ),
+
+        JourneyStop(
+            id = 2,
+            title = "Mathura Temple",
+            address = "Mathura, Uttar Pradesh 281001",
+            notes = "Krishna Janmabhoomi visit and darshan",
+            latitude = 27.4924,
+            longitude = 77.6737,
+            timestamp = 1739491200000 + 2 * 60 * 60 * 1000, // +2 hrs
+            stopType = StopType.VISIT,
+            distanceFromPrev = 183f,
+            durationAtStop = 60
+        ),
+
+        JourneyStop(
+            id = 3,
+            title = "Vrindavan Lunch Stop",
+            address = "Banke Bihari Marg, Vrindavan, UP",
+            notes = "Lunch and rest break",
+            latitude = 27.5806,
+            longitude = 77.7006,
+            timestamp = 1739491200000 + 4 * 60 * 60 * 1000, // +4 hrs
+            stopType = StopType.FOOD,
+            distanceFromPrev = 15f,
+            durationAtStop = 45
+        ),
+
+        JourneyStop(
+            id = 4,
+            title = "Agra Fort Visit",
+            address = "Rakabganj, Agra, UP 282003",
+            notes = "Sightseeing and photography",
+            latitude = 27.1795,
+            longitude = 78.0211,
+            timestamp = 1739491200000 + 7 * 60 * 60 * 1000, // +7 hrs
+            stopType = StopType.VISIT,
+            distanceFromPrev = 70f,
+            durationAtStop = 90
+        ),
+
+        JourneyStop(
+            id = 5,
+            title = "Highway Tea Break",
+            address = "Yamuna Expressway, UP",
+            notes = "Quick tea and rest stop",
+            latitude = 27.5000,
+            longitude = 77.9000,
+            timestamp = 1739491200000 + 9 * 60 * 60 * 1000, // +9 hrs
+            stopType = StopType.REST,
+            distanceFromPrev = 60f,
+            durationAtStop = 15
+        ),
+
+        JourneyStop(
+            id = 6,
+            title = "Jaipur Hotel Check-in",
+            address = "MI Road, Jaipur, Rajasthan 302001",
+            notes = "Overnight stay",
+            latitude = 26.9124,
+            longitude = 75.7873,
+            timestamp = 1739491200000 + 14 * 60 * 60 * 1000, // +14 hrs
+            stopType = StopType.END,
+            distanceFromPrev = 355f,
+            durationAtStop = 600
+        ),
+
+        JourneyStop(
+            id = 7,
+            title = "Jaipur City Palace",
+            address = "City Palace, Jaipur, Rajasthan",
+            notes = "Cultural exploration",
+            latitude = 26.9258,
+            longitude = 75.8237,
+            timestamp = 1739577600000, // next day
+            stopType = StopType.VISIT,
+            distanceFromPrev = 5f,
+            durationAtStop = 120
+        ),
+
+        JourneyStop(
+            id = 8,
+            title = "Journey End Point",
+            address = "Hawa Mahal, Jaipur, Rajasthan",
+            notes = "Final destination",
+            latitude = 26.9239,
+            longitude = 75.8267,
+            timestamp = 1739588400000,
+            stopType = StopType.END,
+            distanceFromPrev = 2f,
+            durationAtStop = 0
+        )
+    )
+
+    val journeyData = Journey(
+        id = 1,
+        name = "Holi Road Trip",
+        description = "A colorful road trip across cities celebrating Holi vibes.",
+        coverEmoji = "🎨",
+        date = "15 Mar 2026",
+        totalDistanceKm = 620f,
+        stops = dummyJourneyStops
+    )
+
+    val journeyStop = JourneyStop(
+        id = 1,
+        title = "New Delhi Railway Station",
+        address = "Ajmeri Gate, New Delhi, Delhi 110006",
+        notes = "Journey starting point",
+        latitude = 28.6430,
+        longitude = 77.2197,
+        timestamp = 1739491200000, // 15 Feb 2025 08:00 AM
+        stopType = StopType.START,
+        distanceFromPrev = 0f,
+        durationAtStop = 20
+    )
+
+    SheetContent(
+        stop = journeyStop,
+        stopNumber = 2,
+        totalStops = 10,
+        journey = journeyData,
+        onDismiss = {},
+        onPrevStop = { },
+        onNextStop = { },
+        hasPrev = false,
+        hasNext = true
+    )
+
+
 }
