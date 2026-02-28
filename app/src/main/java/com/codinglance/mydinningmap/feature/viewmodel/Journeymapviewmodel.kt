@@ -198,4 +198,18 @@ class JourneyMapViewModel : ViewModel() {
 
         return nearestStop
     }
+
+    // Extension to get unique stops across all journeys
+    fun List<Journey>.uniqueStops(): List<JourneyStop> {
+        return this
+            .flatMap { it.stops }
+            .distinctBy { it.restaurant_code }  // ✅ unique by restaurant_code
+    }
+
+    fun List<Journey>.visitCountMap(): Map<String, Int> {
+        return this
+            .flatMap { it.stops }
+            .groupBy { it.restaurant_code }
+            .mapValues { it.value.size }        // ✅ how many times visited
+    }
 }
