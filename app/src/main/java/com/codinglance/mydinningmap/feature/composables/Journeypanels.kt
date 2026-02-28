@@ -29,12 +29,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.codinglance.mydinningmap.DateUtils
 import com.codinglance.mydinningmap.DistanceUtils
 import com.codinglance.mydinningmap.feature.Journey
+import com.codinglance.mydinningmap.feature.JourneyStop
 import com.codinglance.mydinningmap.feature.MapStyle
+import com.codinglance.mydinningmap.feature.StopType
 
 // ─────────────────────────────────────────────────────────────────
 //  TOP APP BAR
@@ -77,7 +79,7 @@ fun JourneyTopBar(
                 )
                 if (journey != null) {
                     Text(
-                        "${journey.stopCount} stops • ${journey.date}",
+                        "${journey.stopCount} restaurants",
                         fontSize = 11.sp,
                         color = Color(0xFF8E8E93)
                     )
@@ -90,16 +92,16 @@ fun JourneyTopBar(
         // ── Right: action buttons ──────────────────────────────────
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             // Map style toggle
-            MapActionButton(
-                label = when (mapStyle) {
-                    MapStyle.STANDARD  -> "🗺"
-                    MapStyle.TERRAIN   -> "🏔"
-                    MapStyle.SATELLITE -> "🛰"
-                },
-                onClick = onMapStyleClick
-            )
+//            MapActionButton(
+//                label = when (mapStyle) {
+//                    MapStyle.STANDARD -> "🗺"
+//                    MapStyle.TERRAIN -> "🏔"
+//                    MapStyle.SATELLITE -> "🛰"
+//                },
+//                onClick = onMapStyleClick
+//            )
             // Fit to journey
-            MapActionButton(label = "⊡", onClick = onFitClick)
+            MapActionButton(label = "⛶", onClick = onFitClick)
         }
     }
 }
@@ -126,6 +128,8 @@ private fun MapActionButton(label: String, onClick: () -> Unit) {
 @Composable
 fun JourneyStatsBar(
     journey: Journey,
+    journeyStop: JourneyStop?,
+    distance: String,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -135,30 +139,20 @@ fun JourneyStatsBar(
             .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
             .background(Color.White)
             .padding(horizontal = 20.dp, vertical = 16.dp),
-        horizontalArrangement = Arrangement.SpaceAround
+        horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         StatItem(
-            emoji = "📍",
+            emoji = "\uD83C\uDF7D\uFE0F",
             value = "${journey.stopCount}",
-            label = "Stops"
+            label = "Restaurants"
         )
+
         StatDivider()
+
         StatItem(
-            emoji = "📏",
-            value = DistanceUtils.formatDistance(journey.totalDistanceKm),
-            label = "Distance"
-        )
-        StatDivider()
-        StatItem(
-            emoji = "⏱",
-            value = DateUtils.formatDuration(journey.totalDurationMins),
-            label = "Duration"
-        )
-        StatDivider()
-        StatItem(
-            emoji = "📅",
-            value = journey.date,
-            label = "Date"
+            emoji = "\uD83D\uDCCD",
+            value = (journeyStop?.title + " ● $distance"),
+            label = "Nearest Restaurant"
         )
     }
 }
@@ -188,7 +182,7 @@ private fun StatDivider() {
     Box(
         modifier = Modifier
             .width(1.dp)
-            .height(36.dp)
+            .height(50.dp)
             .background(Color(0xFFF2F2F7))
     )
 }
@@ -328,4 +322,87 @@ private fun JourneyListItem(
             )
         }
     }
+}
+
+@Preview
+@Composable
+private fun PreviewJourneyStatsBar() {
+    val journey = Journey(
+        id = 1,
+        name = "Gurgaon City",
+        description = "A full day exploring the best of Mumbai",
+        date = "Dec 15, 2024",
+        coverEmoji = "🌆",
+        totalDistanceKm = 34.6f,
+        stops = listOf(
+            JourneyStop(
+                id = 1,
+                title = "Haldiram",
+                address = "Sahara Mall Shopping Complex M.G.Raod,Gurugram",
+                notes = "Started early at 7am. Light traffic.",
+                latitude = 28.4794338,
+                longitude = 77.0864217,
+                stopType = StopType.START,
+                distanceFromPrev = 0f,
+                durationAtStop = 5,
+                date = "",
+                paid_amount = "",
+                total_amount = "",
+                discount_amount = "",
+                image = "",
+                restaurant_code = "",
+                is_chain = false,
+                is_prime = true
+            ),
+            JourneyStop(
+                id = 2,
+                title = "YouMee",
+                address = "Unit No GR-02, Ground Floor, Worldmark Gurgaon, Village Maidawas, Sector 65, Gurugram, Haryana – 122001",
+                notes = "Iconic colonial architecture. Very crowded in the morning but worth it. Watched boats leave for Elephanta.",
+                latitude = 28.3980361,
+                longitude = 77.0726711,
+                stopType = StopType.PHOTO,
+                distanceFromPrev = 12.3f,
+                durationAtStop = 45,
+                date = "",
+                paid_amount = "",
+                total_amount = "",
+                discount_amount = "",
+                image = "",
+                restaurant_code = "",
+                is_chain = false,
+                is_prime = true
+            )
+        )
+    )
+
+    val ne = JourneyStop(
+        id = 2,
+        title = "YouMee",
+        address = "Unit No GR-02, Ground Floor, Worldmark Gurgaon, Village Maidawas, Sector 65, Gurugram, Haryana – 122001",
+        notes = "Iconic colonial architecture. Very crowded in the morning but worth it. Watched boats leave for Elephanta.",
+        latitude = 28.3980361,
+        longitude = 77.0726711,
+        stopType = StopType.PHOTO,
+        distanceFromPrev = 12.3f,
+        durationAtStop = 45,
+        date = "",
+        paid_amount = "",
+        total_amount = "",
+        discount_amount = "",
+        image = "",
+        restaurant_code = "",
+        is_chain = false,
+        is_prime = true
+    )
+
+    JourneyStatsBar(journey, ne, "12 kms")
+
+//    JourneyTopBar(
+//        journey, {  },
+//        onFitClick = {},
+//        onMapStyleClick = {},
+//        mapStyle = MapStyle.STANDARD,
+//        modifier = Modifier
+//    )
 }

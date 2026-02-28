@@ -1,19 +1,54 @@
 package com.journeymap.ui.screen
 
+import android.Manifest
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.provider.Settings
 import android.util.Log
-import androidx.compose.animation.*
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.Glide
+import com.codinglance.mydinningmap.DistanceUtils.formatDistance
+import com.codinglance.mydinningmap.PreferenceManager
 import com.codinglance.mydinningmap.feature.Journey
 import com.codinglance.mydinningmap.feature.MapStyle
 import com.codinglance.mydinningmap.feature.StopColors
@@ -24,8 +59,19 @@ import com.codinglance.mydinningmap.feature.composables.JourneyTopBar
 import com.codinglance.mydinningmap.feature.composables.StopDetailSheet
 import com.codinglance.mydinningmap.feature.viewmodel.JourneyMapViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.*
-import com.google.maps.android.compose.*
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.JointType
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.RoundCap
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapType
+import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.MarkerComposable
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.Polyline
+import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -40,20 +86,24 @@ fun JourneyMapScreen(viewModel: JourneyMapViewModel = viewModel()) {
     LaunchedEffect(journey?.id) {
         if (journey != null) {
             cameraPositionState.animate(
-                CameraUpdateFactory.newLatLngBounds(buildBounds(journey), 120), durationMs = 1200
+                CameraUpdateFactory.newLatLngBounds(buildBounds(journey), 250), durationMs = 1200
             )
         }
     }
     LaunchedEffect(viewModel.cameraTargetStop?.id) {
         val stop = viewModel.cameraTargetStop ?: return@LaunchedEffect
         cameraPositionState.animate(
-            CameraUpdateFactory.newLatLngZoom(LatLng(stop.latitude, stop.longitude), 16f), durationMs = 800
+            CameraUpdateFactory.newLatLngZoom(LatLng(stop.latitude, stop.longitude), 16f),
+            durationMs = 800
         )
         viewModel.clearCameraTarget()
     }
     LaunchedEffect(viewModel.fitBoundsRequest) {
         val bounds = viewModel.fitBoundsRequest ?: return@LaunchedEffect
-        cameraPositionState.animate(CameraUpdateFactory.newLatLngBounds(bounds, 120), durationMs = 1000)
+        cameraPositionState.animate(
+            CameraUpdateFactory.newLatLngBounds(bounds, 250),
+            durationMs = 1000
+        )
         viewModel.clearFitBoundsRequest()
     }
 
@@ -73,7 +123,41 @@ fun JourneyMapScreen(viewModel: JourneyMapViewModel = viewModel()) {
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding()) {
+    // State to track if we have permission
+    var hasLocationPermission by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+
+    // The launcher that actually pops up the system dialog
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        hasLocationPermission = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+    }
+
+    // Trigger the check when the screen starts
+    LaunchedEffect(Unit) {
+        if (!hasLocationPermission) {
+            permissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .navigationBarsPadding()
+    ) {
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
@@ -84,10 +168,11 @@ fun JourneyMapScreen(viewModel: JourneyMapViewModel = viewModel()) {
                 compassEnabled = true
             ),
             properties = MapProperties(
+                isMyLocationEnabled = hasLocationPermission,
                 mapType = when (viewModel.mapStyle) {
-                    MapStyle.STANDARD  -> MapType.NORMAL
-                    MapStyle.TERRAIN   -> MapType.TERRAIN
-                    MapStyle.SATELLITE -> MapType.HYBRID
+                    MapStyle.STANDARD -> MapType.NORMAL
+                    MapStyle.TERRAIN -> MapType.TERRAIN
+                    MapStyle.SATELLITE -> MapType.NORMAL
                 }
             )
         ) {
@@ -112,14 +197,43 @@ fun JourneyMapScreen(viewModel: JourneyMapViewModel = viewModel()) {
             }
         }
 
+        if (!hasLocationPermission) {
+            Text(
+                text = "Enable Location in Settings",
+                modifier = Modifier
+                    .padding(bottom = 120.dp)
+                    .shadow(
+                        8.dp,
+                        RoundedCornerShape(16.dp),
+                        ambientColor = Color.Black.copy(0.08f)
+                    )
+                    .border(1.dp, color = Color.LightGray, shape = RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color.White)
+                    .clickable {
+                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                            data = Uri.fromParts("package", context.packageName, null)
+                        }
+                        context.startActivity(intent)
+                    }
+                    .padding(10.dp)
+                    .align(Alignment.BottomCenter),
+                color = Color.Black
+            )
+        }
+
         JourneyTopBar(
             journey = journey,
             onMenuClick = { viewModel.toggleJourneyList() },
             onFitClick = { viewModel.fitToJourney() },
             onMapStyleClick = { viewModel.cycleMapStyle() },
             mapStyle = viewModel.mapStyle,
-            modifier = Modifier.align(Alignment.TopCenter).statusBarsPadding()
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .statusBarsPadding()
         )
+
+        val userLatLng = PreferenceManager(LocalContext.current).getLastLocation()
 
         AnimatedVisibility(
             visible = journey != null && !viewModel.isSheetVisible,
@@ -128,7 +242,28 @@ fun JourneyMapScreen(viewModel: JourneyMapViewModel = viewModel()) {
             modifier = Modifier.align(Alignment.BottomCenter)
         ) {
             if (journey != null) {
-                JourneyStatsBar(journey = journey, modifier = Modifier.navigationBarsPadding())
+                val nearestRestaurant = viewModel.getNearestRestaurant(userLatLng, journey.stops)
+
+                val lat = LatLng(
+                    nearestRestaurant?.latitude ?: -1.0,
+                    nearestRestaurant?.longitude ?: -1.0
+                )
+
+                val distance = userLatLng?.let {
+                    viewModel.getDistanceInMeters(
+                        lat,
+                        userLatLng
+                    )
+                }
+
+                val formatted = formatDistance((distance ?: 0f) / 1000)
+
+                JourneyStatsBar(
+                    journey = journey,
+                    nearestRestaurant,
+                    formatted,
+                    modifier = Modifier.navigationBarsPadding()
+                )
             }
         }
 
@@ -147,12 +282,26 @@ fun JourneyMapScreen(viewModel: JourneyMapViewModel = viewModel()) {
 
         val selected = viewModel.selectedStop
         val activeJ = viewModel.activeJourney
+
+        val selectedLatLng = LatLng(
+            viewModel.selectedStop?.latitude ?: -1.0,
+            viewModel.selectedStop?.longitude ?: -1.0
+        )
+
+        val distance = userLatLng?.let {
+            viewModel.getDistanceInMeters(
+                selectedLatLng,
+                userLatLng
+            )
+        }
+
         if (viewModel.isSheetVisible && selected != null && activeJ != null) {
             StopDetailSheet(
                 stop = selected,
                 stopNumber = activeJ.stops.indexOf(selected) + 1,
                 totalStops = activeJ.stopCount,
                 journey = activeJ,
+                distance = distance,
                 onDismiss = { viewModel.dismissSheet() },
                 onPrevStop = { viewModel.goToPrevStop() },
                 onNextStop = { viewModel.goToNextStop() },

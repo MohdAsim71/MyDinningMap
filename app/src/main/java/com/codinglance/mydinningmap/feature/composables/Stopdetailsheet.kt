@@ -64,6 +64,7 @@ fun StopDetailSheet(
     stopNumber: Int,
     totalStops: Int,
     journey: Journey,
+    distance: Float?,
     onDismiss: () -> Unit,
     onPrevStop: () -> Unit,
     onNextStop: () -> Unit,
@@ -85,6 +86,7 @@ fun StopDetailSheet(
             stopNumber,
             totalStops,
             journey,
+            distance,
             onDismiss,
             onPrevStop,
             onNextStop,
@@ -102,6 +104,7 @@ fun SheetContent(
     stopNumber: Int,
     totalStops: Int,
     journey: Journey,
+    distance: Float?,
     onDismiss: () -> Unit,
     onPrevStop: () -> Unit,
     onNextStop: () -> Unit,
@@ -165,7 +168,7 @@ fun SheetContent(
             HorizontalDivider(color = Color(0xFFF2F2F7), thickness = 1.dp)
 
             // ── Info rows ─────────────────────────────────────────
-            InfoSection(stop)
+            InfoSection(stop, distance)
 
             // ── Notes section ─────────────────────────────────────
             if (stop.notes.isNotBlank()) {
@@ -247,7 +250,7 @@ private fun SheetHeader(
 // ─────────────────────────────────────────────────────────────────
 
 @Composable
-private fun InfoSection(stop: JourneyStop) {
+private fun InfoSection(stop: JourneyStop, distance: Float?) {
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
 
         // Date & Time
@@ -265,11 +268,11 @@ private fun InfoSection(stop: JourneyStop) {
         )
 
         // Distance from previous
-        if (stop.distanceFromPrev > 0f) {
+        if (distance != null && distance > 0f) {
             InfoRow(
                 emoji = "📏",
-                label = "DISTANCE FROM PREVIOUS STOP",
-                value = DistanceUtils.formatDistance(stop.distanceFromPrev),
+                label = "DISTANCE FROM YOUR LOCATION",
+                value = DistanceUtils.formatDistance(distance / 1000),
                 valueColor = Color(0xFF007AFF)
             )
         }
@@ -379,7 +382,9 @@ private fun StopNavigation(
             OutlinedButton(
                 onClick = onPrev,
                 enabled = hasPrev,
-                modifier = Modifier.weight(1f).height(48.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .height(48.dp),
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.outlinedButtonColors(
                     contentColor = color,
@@ -397,7 +402,9 @@ private fun StopNavigation(
             Button(
                 onClick = onNext,
                 enabled = hasNext,
-                modifier = Modifier.weight(1f).height(48.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .height(48.dp),
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = color,

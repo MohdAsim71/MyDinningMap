@@ -1,7 +1,10 @@
 package com.codinglance.mydinningmap.feature.viewmodel
 
 
-import androidx.compose.runtime.*
+import android.location.Location
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codinglance.mydinningmap.feature.Journey
@@ -108,8 +111,8 @@ class JourneyMapViewModel : ViewModel() {
 
     fun cycleMapStyle() {
         mapStyle = when (mapStyle) {
-            MapStyle.STANDARD  -> MapStyle.TERRAIN
-            MapStyle.TERRAIN   -> MapStyle.SATELLITE
+            MapStyle.STANDARD -> MapStyle.TERRAIN
+            MapStyle.TERRAIN -> MapStyle.SATELLITE
             MapStyle.SATELLITE -> MapStyle.STANDARD
         }
     }
@@ -160,5 +163,39 @@ class JourneyMapViewModel : ViewModel() {
             builder.include(LatLng(stop.latitude, stop.longitude))
         }
         return builder.build()
+    }
+
+    fun getDistanceInMeters(start: LatLng, end: LatLng): Float {
+        val results = FloatArray(1)
+        Location.distanceBetween(
+            start.latitude, start.longitude,
+            end.latitude, end.longitude,
+            results
+        )
+        return results[0]
+    }
+
+    fun getNearestRestaurant(userLatLng: LatLng?, stops: List<JourneyStop>): JourneyStop? {
+        if (userLatLng == null || stops.isEmpty()) return null
+
+        var nearestStop: JourneyStop? = null
+        var shortestDistance = Float.MAX_VALUE
+
+        for (stop in stops) {
+            val results = FloatArray(1)
+            Location.distanceBetween(
+                userLatLng.latitude, userLatLng.longitude,
+                stop.latitude, stop.longitude,
+                results
+            )
+            val distance = results[0]
+
+            if (distance < shortestDistance) {
+                shortestDistance = distance
+                nearestStop = stop
+            }
+        }
+
+        return nearestStop
     }
 }
