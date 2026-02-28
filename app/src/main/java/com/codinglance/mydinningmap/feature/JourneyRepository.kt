@@ -28,10 +28,17 @@ object JourneyRepository {
                     notes = "Started early at 7am. Light traffic.",
                     latitude = 28.4794338,
                     longitude = 77.0864217,
-                    timestamp = 1734232200000L,
+                    date = "Jul 12, 2025 at 09:58 PM",
                     stopType = StopType.START,
                     distanceFromPrev = 0f,
-                    durationAtStop = 5
+                    durationAtStop = 5,
+                    paid_amount = "₹ 288",
+                    total_amount = "₹ 404",
+                    discount_amount = "₹ 116",
+                    image = "https://dt4l9bx31tioh.cloudfront.net/eazymedia/group/117/0.jpg?width=5000&height=500&mode=fit",
+                    restaurant_code = "https://www.eazydiner.com/delhi-ncr/haldirams-mg-road-delhi-119623",
+                    is_chain = true,
+                    is_prime = false
                 ),
                 JourneyStop(
                     id = 2,
@@ -40,10 +47,17 @@ object JourneyRepository {
                     notes = "Iconic colonial architecture. Very crowded in the morning but worth it. Watched boats leave for Elephanta.",
                     latitude = 28.3980361,
                     longitude = 77.0726711,
-                    timestamp = 1734236400000L,
+                    date = "Jun 08, 2025 at 12:48 PM",
                     stopType = StopType.PHOTO,
                     distanceFromPrev = 12.3f,
-                    durationAtStop = 45
+                    durationAtStop = 45,
+                    paid_amount = "₹ 1124",
+                    total_amount = "₹ 1836",
+                    discount_amount = "₹ 712",
+                    image = "https://dt4l9bx31tioh.cloudfront.net/eazymedia/restaurant/687654/restaurant020230320081903.jpeg?width=500&height=500&mode=fit",
+                    restaurant_code = "https://www.eazydiner.com/delhi-ncr/youmee-worldmark-4-sector-65-gurgaon-687654",
+                    is_chain = false,
+                    is_prime = false
                 ),
                 JourneyStop(
                     id = 3,
@@ -52,10 +66,17 @@ object JourneyRepository {
                     notes = "Famous breakfast spot. Had keema pav and chai. Great vibes, old-school feel.",
                     latitude = 28.4714694,
                     longitude = 77.1020038,
-                    timestamp = 1734239400000L,
+                    date = "Dec 06, 2025 at 06:21 PM",
                     stopType = StopType.FOOD,
                     distanceFromPrev = 0.6f,
-                    durationAtStop = 60
+                    durationAtStop = 60,
+                    paid_amount = "₹ 355",
+                    total_amount = "₹ 609",
+                    discount_amount = "₹ 254",
+                    image = "https://dt4l9bx31tioh.cloudfront.net/eazymedia/group/552/menu020230111095005.jpg?width=500&height=500&mode=fit",
+                    restaurant_code = "https://www.eazydiner.com/delhi-ncr/barista-lavazza-espresso-bar-dlf-phase-1-120792",
+                    is_chain = true,
+                    is_prime = false
                 ),
                 JourneyStop(
                     id = 4,
@@ -64,10 +85,17 @@ object JourneyRepository {
                     notes = "Famous breakfast spot. Had keema pav and chai. Great vibes, old-school feel.",
                     latitude = 28.4950716,
                     longitude = 77.0884522,
-                    timestamp = 1734239400000L,
+                    date = "May 17, 2025 at 12:17 AM",
                     stopType = StopType.FOOD,
                     distanceFromPrev = 0.6f,
-                    durationAtStop = 60
+                    durationAtStop = 60,
+                    paid_amount = "₹ 2791",
+                    total_amount = "₹ 4677",
+                    discount_amount = "₹ 1886",
+                    image = "https://dt4l9bx31tioh.cloudfront.net/eazymedia/restaurant/695156/restaurant020240514121719.jpg?width=500&height=500&mode=fit",
+                    restaurant_code = "https://www.eazydiner.com/delhi-ncr/pf-changs-cyber-hub-gurgaon-695156",
+                    is_chain = false,
+                    is_prime = true
                 ),
                 JourneyStop(
                     id = 5,
@@ -76,10 +104,17 @@ object JourneyRepository {
                     notes = "Picked up fresh fruits and spices. Chaotic but fun experience. Got mangoes and cashews.",
                     latitude = 28.4809652,
                     longitude = 77.0803792,
-                    timestamp = 1734246000000L,
+                    date = "Jul 03, 2025 at 08:08 PM",
                     stopType = StopType.VISIT,
                     distanceFromPrev = 0.7f,
-                    durationAtStop = 40
+                    durationAtStop = 40,
+                    paid_amount = "₹ 488",
+                    total_amount = "₹ 659",
+                    discount_amount = "₹ 171",
+                    image = "https://dt4l9bx31tioh.cloudfront.net/eazymedia/group/117/0.jpg?width=500&height=500&mode=fit",
+                    restaurant_code = "https://www.eazydiner.com/delhi-ncr/haldirams-global-foyer-mall-gurgaon-690568",
+                    is_chain = true,
+                    is_prime = false
                 ),
                 JourneyStop(
                     id = 6,
@@ -88,10 +123,17 @@ object JourneyRepository {
                     notes = "Had their famous chicken sandwich and beer. Love the Mario Miranda murals on the walls.",
                     latitude = 28.4959442,
                     longitude = 77.0888396,
-                    timestamp = 1734252000000L,
+                    date = "Nov 06, 2025 at 02:42 PM",
                     stopType = StopType.FOOD,
                     distanceFromPrev = 3.2f,
-                    durationAtStop = 75
+                    durationAtStop = 75,
+                    paid_amount = "₹ 2090",
+                    total_amount = "₹ 3113",
+                    discount_amount = "₹ 1023",
+                    image = "https://dt4l9bx31tioh.cloudfront.net/eazymedia/restaurant/643894/restaurant020210113062035.jpg?width=500&height=500&mode=fit",
+                    restaurant_code = "https://www.eazydiner.com/delhi-ncr/punjab-grill-tappa-cyber-hub-gurgaon-643894",
+                    is_chain = false,
+                    is_prime = false
                 ),
                 JourneyStop(
                     id = 7, title = "OMI by Aldott",
@@ -99,10 +141,17 @@ object JourneyRepository {
                     notes = "Walked the Queen's Necklace at golden hour. Beautiful sunset view. Sat at the sea wall for an hour.",
                     latitude = 28.492682,
                     longitude = 77.1076935,
-                    timestamp = 1734260400000L,
+                    date = "Nov 05, 2025 at 04:23 PM",
                     stopType = StopType.VISIT,
                     distanceFromPrev = 4.1f,
-                    durationAtStop = 60
+                    durationAtStop = 60,
+                    paid_amount = "₹ 1822",
+                    total_amount = "₹ 2588",
+                    discount_amount = "₹ 766",
+                    image = "https://dt4l9bx31tioh.cloudfront.net/eazymedia/restaurant/696057/restaurant020240607113245.jpg?width=500&height=500&mode=fit",
+                    restaurant_code = "https://www.eazydiner.com/delhi-ncr/omi-by-aldott-dlf-phase-3-gurgaon-696057",
+                    is_chain = false,
+                    is_prime = false
                 ),
                 JourneyStop(
                     id = 8,
@@ -111,10 +160,17 @@ object JourneyRepository {
                     notes = "Quick coffee stop before heading home.",
                     latitude = 28.5049246,
                     longitude = 77.0527208,
-                    timestamp = 1734267600000L,
+                    date = "Oct 10, 2025 at 11:29 PM",
                     stopType = StopType.REST,
                     distanceFromPrev = 9.8f,
-                    durationAtStop = 25
+                    durationAtStop = 25,
+                    paid_amount = "₹ 752",
+                    total_amount = "₹ 969",
+                    discount_amount = "₹ 217",
+                    image = "https://dt4l9bx31tioh.cloudfront.net/eazymedia/restaurant/683100/restaurant020220329071556.jpeg?width=500&height=500&mode=fit",
+                    restaurant_code = "https://www.eazydiner.com/delhi-ncr/my-secret-place-palam-vihar-gurgaon-683100",
+                    is_chain = false,
+                    is_prime = false
                 ),
                 JourneyStop(
                     id = 9,
@@ -123,10 +179,17 @@ object JourneyRepository {
                     notes = "Back home after an amazing day. Feet ache but memories made!",
                     latitude = 28.4938892,
                     longitude = 77.0883356,
-                    timestamp = 1734270000000L,
+                    date = "Jul 29, 2025 at 10:35 PM",
                     stopType = StopType.END,
                     distanceFromPrev = 1.8f,
-                    durationAtStop = 0
+                    durationAtStop = 0,
+                    paid_amount = "₹ 5657",
+                    total_amount = "₹ 7689",
+                    discount_amount = "₹ 2032",
+                    image = "https://dt4l9bx31tioh.cloudfront.net/eazymedia/restaurant/653381/restaurant020180511132249.jpg?width=500&height=500&mode=fit",
+                    restaurant_code = "https://www.eazydiner.com/delhi-ncr/the-drunken-botanist-dlf-cyber-city-gurgaon-653381",
+                    is_chain = false,
+                    is_prime = false
                 ),
                 JourneyStop(
                     id = 10,
@@ -135,169 +198,17 @@ object JourneyRepository {
                     notes = "Back home after an amazing day. Feet ache but memories made!",
                     latitude = 28.5055767,
                     longitude = 77.0962019,
-                    timestamp = 1734270000000L,
+                    date = "Jul 22, 2025 at 04:02 PM",
                     stopType = StopType.END,
                     distanceFromPrev = 1.8f,
-                    durationAtStop = 0
-                )
-            )
-        ),
-
-        // ── Journey 2: Delhi Heritage Walk ────────────────────────
-        Journey(
-            id = 2,
-            name = "Delhi Heritage Walk",
-            description = "Old Delhi to New Delhi monuments trail",
-            date = "Jan 4, 2025",
-            coverEmoji = "🏛️",
-            totalDistanceKm = 22.4f,
-            stops = listOf(
-                JourneyStop(
-                    id = 10, title = "Hotel – Connaught Place",
-                    address = "Connaught Place, New Delhi 110001",
-                    notes = "Checked out of hotel after breakfast.",
-                    latitude = 28.6315, longitude = 77.2167,
-                    timestamp = 1735971600000L,
-                    stopType = StopType.START,
-                    distanceFromPrev = 0f, durationAtStop = 10
-                ),
-                JourneyStop(
-                    id = 11, title = "India Gate",
-                    address = "Rajpath, India Gate, New Delhi 110001",
-                    notes = "War memorial dedicated to soldiers. Grand structure. Lots of families picnicking around.",
-                    latitude = 28.6129, longitude = 77.2295,
-                    timestamp = 1735974000000L,
-                    stopType = StopType.PHOTO,
-                    distanceFromPrev = 3.2f, durationAtStop = 40
-                ),
-                JourneyStop(
-                    id = 12, title = "Humayun's Tomb",
-                    address = "Mathura Road, Nizamuddin East, New Delhi 110013",
-                    notes = "Precursor to the Taj Mahal. Stunning Mughal architecture. Gardens were immaculately maintained.",
-                    latitude = 28.5933, longitude = 77.2507,
-                    timestamp = 1735979400000L,
-                    stopType = StopType.VISIT,
-                    distanceFromPrev = 5.1f, durationAtStop = 75
-                ),
-                JourneyStop(
-                    id = 13, title = "Paranthe Wali Gali",
-                    address = "Chandni Chowk, Old Delhi, Delhi 110006",
-                    notes = "Best stuffed parathas in India! Had aloo and paneer paratha with chole. Absolutely amazing.",
-                    latitude = 28.6562, longitude = 77.2310,
-                    timestamp = 1735988400000L,
-                    stopType = StopType.FOOD,
-                    distanceFromPrev = 8.7f, durationAtStop = 50
-                ),
-                JourneyStop(
-                    id = 14, title = "Red Fort",
-                    address = "Netaji Subhash Marg, Lal Qila, Old Delhi 110006",
-                    notes = "Massive Mughal fortress. The Lahori Gate is breathtaking. Sound & light show info collected for evening.",
-                    latitude = 28.6562, longitude = 77.2410,
-                    timestamp = 1735992000000L,
-                    stopType = StopType.VISIT,
-                    distanceFromPrev = 1.1f, durationAtStop = 90
-                ),
-                JourneyStop(
-                    id = 15, title = "Jama Masjid",
-                    address = "Jama Masjid Road, Chandni Chowk, Old Delhi 110006",
-                    notes = "One of the largest mosques in India. Climbed the minaret for panoramic old Delhi views.",
-                    latitude = 28.6507, longitude = 77.2334,
-                    timestamp = 1735998600000L,
-                    stopType = StopType.PHOTO,
-                    distanceFromPrev = 1.0f, durationAtStop = 45
-                ),
-                JourneyStop(
-                    id = 16, title = "Back to Hotel",
-                    address = "Connaught Place, New Delhi 110001",
-                    notes = "Exhausted but fulfilled. Covered 22km today!",
-                    latitude = 28.6315, longitude = 77.2167,
-                    timestamp = 1736006400000L,
-                    stopType = StopType.END,
-                    distanceFromPrev = 3.3f, durationAtStop = 0
-                )
-            )
-        ),
-
-        // ── Journey 3: Goa Beach Hopping ──────────────────────────
-        Journey(
-            id = 3,
-            name = "Goa Beach Hopping",
-            description = "North Goa beaches in one perfect day",
-            date = "Feb 10, 2025",
-            coverEmoji = "🏖️",
-            totalDistanceKm = 48.2f,
-            stops = listOf(
-                JourneyStop(
-                    id = 17, title = "Resort – Candolim",
-                    address = "Candolim Beach Road, Candolim, Goa 403515",
-                    notes = "Early start to beat the beach crowds.",
-                    latitude = 15.5189, longitude = 73.7606,
-                    timestamp = 1739165400000L,
-                    stopType = StopType.START,
-                    distanceFromPrev = 0f, durationAtStop = 10
-                ),
-                JourneyStop(
-                    id = 18, title = "Aguada Fort",
-                    address = "Sinquerim, Bardez, North Goa 403519",
-                    notes = "17th century Portuguese fort. Lighthouse still operational. Stunning views of Arabian Sea.",
-                    latitude = 15.5015, longitude = 73.7732,
-                    timestamp = 1739167800000L,
-                    stopType = StopType.PHOTO,
-                    distanceFromPrev = 4.2f, durationAtStop = 45
-                ),
-                JourneyStop(
-                    id = 19, title = "Baga Beach",
-                    address = "Baga, North Goa 403516",
-                    notes = "Lively beach. Had fresh coconut water. Watched parasailing. Great energy here.",
-                    latitude = 15.5556, longitude = 73.7519,
-                    timestamp = 1739172600000L,
-                    stopType = StopType.REST,
-                    distanceFromPrev = 7.8f, durationAtStop = 60
-                ),
-                JourneyStop(
-                    id = 20, title = "Brittos – Baga",
-                    address = "Baga Beach Road, Baga, Goa 403516",
-                    notes = "Famous beach shack. Had kingfish recheado and prawn curry rice. Cold Kingfisher beer too!",
-                    latitude = 15.5572, longitude = 73.7511,
-                    timestamp = 1739176800000L,
-                    stopType = StopType.FOOD,
-                    distanceFromPrev = 0.3f, durationAtStop = 90
-                ),
-                JourneyStop(
-                    id = 21, title = "Anjuna Flea Market",
-                    address = "Anjuna Beach, North Goa 403509",
-                    notes = "Iconic flea market. Bought a hand-painted bag and silver jewellery. Lots of hippie vibes.",
-                    latitude = 15.5736, longitude = 73.7403,
-                    timestamp = 1739184000000L,
-                    stopType = StopType.VISIT,
-                    distanceFromPrev = 5.1f, durationAtStop = 75
-                ),
-                JourneyStop(
-                    id = 22, title = "Vagator Beach Sunset",
-                    address = "Vagator, North Goa 403509",
-                    notes = "Best sunset of the trip. Sat on the red cliffs as the sun dipped into the sea. Magical.",
-                    latitude = 15.5996, longitude = 73.7440,
-                    timestamp = 1739192400000L,
-                    stopType = StopType.PHOTO,
-                    distanceFromPrev = 4.6f, durationAtStop = 50
-                ),
-                JourneyStop(
-                    id = 23, title = "Thalassa – Vagator",
-                    address = "Small Vagator Beach, Ozran, Goa 403509",
-                    notes = "Greek taverna with sea view. Had Mediterranean mezze platter and fresh lime soda.",
-                    latitude = 15.5981, longitude = 73.7446,
-                    timestamp = 1739196000000L,
-                    stopType = StopType.FOOD,
-                    distanceFromPrev = 0.4f, durationAtStop = 75
-                ),
-                JourneyStop(
-                    id = 24, title = "Resort – Candolim",
-                    address = "Candolim Beach Road, Candolim, Goa 403515",
-                    notes = "Long drive back. Stars were incredible on the way.",
-                    latitude = 15.5189, longitude = 73.7606,
-                    timestamp = 1739203800000L,
-                    stopType = StopType.END,
-                    distanceFromPrev = 25.8f, durationAtStop = 0
+                    durationAtStop = 0,
+                    paid_amount = "₹ 4453",
+                    total_amount = "₹ 5343",
+                    discount_amount = "₹ 890",
+                    image = "https://dt4l9bx31tioh.cloudfront.net/eazymedia/restaurant/671925/restaurant320201006084302.jpg?width=500&height=500&mode=fit",
+                    restaurant_code = "https://www.eazydiner.com/delhi-ncr/daryaganj-ambience-mall-gurgaon-671925",
+                    is_chain = false,
+                    is_prime = false
                 )
             )
         )

@@ -1,5 +1,7 @@
 package com.journeymap.ui.screen
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
@@ -7,7 +9,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.bumptech.glide.Glide
 import com.codinglance.mydinningmap.feature.Journey
 import com.codinglance.mydinningmap.feature.MapStyle
 import com.codinglance.mydinningmap.feature.StopColors
@@ -20,6 +26,9 @@ import com.codinglance.mydinningmap.feature.viewmodel.JourneyMapViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.compose.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun JourneyMapScreen(viewModel: JourneyMapViewModel = viewModel()) {
@@ -48,6 +57,22 @@ fun JourneyMapScreen(viewModel: JourneyMapViewModel = viewModel()) {
         viewModel.clearFitBoundsRequest()
     }
 
+    // ✅ Load all bitmaps here — LaunchedEffect works fine at screen level
+    val bitmapMap = remember { mutableStateMapOf<String, ImageBitmap?>() }
+    val context = LocalContext.current
+
+    LaunchedEffect(journey?.stops) {
+        journey?.stops?.forEach { stop ->
+            if (stop.image.isNotBlank() && !bitmapMap.containsKey(stop.image)) {
+                launch {
+                    Log.d("MapScreen", "Loading: ${stop.image}")
+                    bitmapMap[stop.image] = loadBitmapFromUrl(context, stop.image)
+                    Log.d("MapScreen", "Loaded: ${stop.image} → ${bitmapMap[stop.image]}")
+                }
+            }
+        }
+    }
+
     Box(modifier = Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding()) {
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
@@ -66,9 +91,11 @@ fun JourneyMapScreen(viewModel: JourneyMapViewModel = viewModel()) {
                 }
             )
         ) {
-            if (journey != null) {
-                JourneyPolyline(journey)
-                journey.stops.forEachIndexed { index, stop ->
+            journey?.stops?.forEachIndexed { index, stop ->
+                val bitmap = bitmapMap[stop.image]  // ✅ observe state directly
+
+                // ✅ key() forces MarkerComposable to recompose when bitmap changes
+                key(stop.image, bitmap != null) {
                     MarkerComposable(
                         state = MarkerState(position = LatLng(stop.latitude, stop.longitude)),
                         title = stop.title,
@@ -77,7 +104,8 @@ fun JourneyMapScreen(viewModel: JourneyMapViewModel = viewModel()) {
                         JourneyMarker(
                             stop = stop,
                             stopNumber = index + 1,
-                            isSelected = viewModel.selectedStop?.id == stop.id
+                            isSelected = false,
+                            imageBitmap = bitmap
                         )
                     }
                 }
@@ -185,4 +213,20 @@ private fun buildBounds(journey: Journey): LatLngBounds {
     val builder = LatLngBounds.builder()
     journey.stops.forEach { builder.include(LatLng(it.latitude, it.longitude)) }
     return builder.build()
+}
+
+suspend fun loadBitmapFromUrl(context: Context, url: String): ImageBitmap? {
+    return withContext(Dispatchers.IO) {
+        try {
+            val bitmap = Glide.with(context.applicationContext)
+                .asBitmap()
+                .load(url)
+                .submit()
+                .get()
+            bitmap.asImageBitmap()
+        } catch (e: Exception) {
+            Log.e("BitmapLoader", "❌ Failed: ${e.message}")
+            null
+        }
+    }
 }

@@ -15,11 +15,18 @@ data class JourneyStop(
     val notes: String,
     val latitude: Double,
     val longitude: Double,
-    val timestamp: Long,          // epoch ms
+    val date: String,          // epoch ms
     val stopType: StopType = StopType.VISIT,
     val distanceFromPrev: Float = 0f,  // km
     val durationAtStop: Int = 0,  // minutes
-)
+    val paid_amount: String,
+    val total_amount: String,
+    val discount_amount: String,
+    val image: String,
+    val restaurant_code: String,
+    val is_chain: Boolean,
+    val is_prime: Boolean,
+    )
 
 enum class StopType(val label: String, val emoji: String) {
     START("Journey Start", "🏠"),

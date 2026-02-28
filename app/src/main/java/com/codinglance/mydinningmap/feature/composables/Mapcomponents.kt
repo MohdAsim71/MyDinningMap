@@ -1,24 +1,41 @@
 package com.codinglance.mydinningmap.feature.composables
 
 
+import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bumptech.glide.Glide
+
 import com.codinglance.mydinningmap.feature.JourneyStop
 import com.codinglance.mydinningmap.feature.StopColors
 import com.codinglance.mydinningmap.feature.StopType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
 // ─────────────────────────────────────────────────────────────────
@@ -30,65 +47,94 @@ import com.codinglance.mydinningmap.feature.StopType
 fun JourneyMarker(
     stop: JourneyStop,
     stopNumber: Int,
-    isSelected: Boolean
+    isSelected: Boolean,
+    imageBitmap: ImageBitmap?
 ) {
     val color = StopColors.forType(stop.stopType)
     val size = if (isSelected) 52.dp else 42.dp
     val borderWidth = if (isSelected) 3.dp else 2.dp
+    val crownSize = if (isSelected) 22.dp else 18.dp
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(0.dp)
     ) {
-        // ── Marker bubble ─────────────────────────────────────────
+
+        // ── Crown + Bubble wrapped in a Box ───────────────────────
         Box(
-            modifier = Modifier
-                .size(size)
-                .shadow(
-                    elevation = if (isSelected) 12.dp else 6.dp,
-                    shape = CircleShape,
-                    ambientColor = color.copy(alpha = 0.3f),
-                    spotColor = color.copy(alpha = 0.5f)
-                )
-                .clip(CircleShape)
-                .background(if (isSelected) color else Color.White)
-                .border(borderWidth, color, CircleShape),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.TopCenter
         ) {
-            when (stop.stopType) {
-                StopType.START, StopType.END -> {
-                    Text(
-                        text = stop.stopType.emoji,
-                        fontSize = if (isSelected) 20.sp else 16.sp
+            // ── Marker bubble (push down to leave room for crown) ──
+            Box(
+                modifier = Modifier
+                    .padding(top = if (stop.is_prime) crownSize / 2 else 0.dp)
+                    .size(size)
+                    .shadow(
+                        elevation = if (isSelected) 12.dp else 6.dp,
+                        shape = CircleShape,
+                        ambientColor = color.copy(alpha = 0.3f),
+                        spotColor = color.copy(alpha = 0.5f)
+                    )
+                    .clip(CircleShape)
+                    .background(if (isSelected) color else Color.White)
+                    .border(
+                        width = if (stop.is_prime) 2.dp else borderWidth,
+                        color = if (stop.is_prime) Color(0xFFFFD700) else color, // gold border for prime
+                        shape = CircleShape
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                if (imageBitmap != null) {
+                    Image(
+                        bitmap = imageBitmap,
+                        contentDescription = "Stop $stopNumber",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(if (isSelected) 20.dp else 16.dp),
+                        color = color,
+                        strokeWidth = 2.dp
                     )
                 }
-                else -> {
+            }
+
+            // ── Crown badge on top ─────────────────────────────────
+            if (stop.is_prime) {
+                Box(
+                    modifier = Modifier
+                        .size(crownSize)
+                        .align(Alignment.TopCenter)
+                        .background(Color(0xFFFFD700), CircleShape) // gold circle bg
+                        .border(1.dp, Color.White, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
                     Text(
-                        text = stopNumber.toString(),
-                        fontSize = if (isSelected) 16.sp else 13.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = if (isSelected) Color.White else color
+                        text = "👑",
+                        fontSize = if (isSelected) 11.sp else 9.sp,
+                        textAlign = TextAlign.Center
                     )
                 }
             }
         }
 
-        // ── Marker tail (triangle pointer) ────────────────────────
+        // ── Marker tail ───────────────────────────────────────────
         Box(
             modifier = Modifier
                 .width(if (isSelected) 3.dp else 2.dp)
                 .height(if (isSelected) 10.dp else 7.dp)
-                .background(color)
+                .background(if (stop.is_prime) Color(0xFFFFD700) else color)
         )
-        // Dot at base
         Box(
             modifier = Modifier
                 .size(if (isSelected) 6.dp else 4.dp)
                 .clip(CircleShape)
-                .background(color)
+                .background(if (stop.is_prime) Color(0xFFFFD700) else color)
         )
     }
 }
+
 
 // ─────────────────────────────────────────────────────────────────
 //  STOP TYPE BADGE (used in sheet)
