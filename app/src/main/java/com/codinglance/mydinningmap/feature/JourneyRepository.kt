@@ -6,6 +6,8 @@ package com.codinglance.mydinningmap.feature
 //  Replace with your real data source (Room DB / API / etc.)
 // ─────────────────────────────────────────────────────────────────
 
+// New Restaurant Data
+
 object JourneyRepository {
 
     val sampleJourneys: List<Journey> = listOf(
